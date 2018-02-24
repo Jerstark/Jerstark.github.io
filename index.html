@@ -28,7 +28,7 @@ function geoFindMe() {
   }
 
   function error(err) {
-    output.innerHTML = "Unable to retrieve your location: " + err;
+    output.innerHTML = "Unable to retrieve your location: " + JSON.stringify(err);
   }
 
   output.innerHTML = "<p>Locating…</p>";
