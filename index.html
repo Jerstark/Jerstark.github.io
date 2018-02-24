@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html>
 <body style='margin: 0px 0px 0px 0px; padding: 0px; overflow: hidden'>
-<div id="loc" style='width: 100%; height: 100%; font-size: 30px'>Hi there!</div>
+<p><button onclick="geoFindMe()">Show my location</button></p>
+<div id="out"></div>
 </body>
 </html>
 <script>
-var options = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0
-};
+    var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    };
+	
+function geoFindMe() {
+  var output = document.getElementById("out");
 
-function success(pos) {
-  var crd = pos.coords;
+  if (!navigator.geolocation){
+    output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+    return;
+  }
 
-  console.log('Your current position is:');
-  console.log('Latitude : ' + crd.latitude);
-  console.log('Longitude: ' + crd.longitude);
-  document.getElementById("loc").innerHTML = "Lat, Long: " + crd.latitude + ", " + crd.longitude;
-};
+  function success(position) {
+    var latitude  = position.coords.latitude;
+    var longitude = position.coords.longitude;
 
-function error(err) {
-  console.warn('ERROR(' + err.code + '): ' + err.message);
-};
+    output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
 
-navigator.geolocation.getCurrentPosition(success, error, options);
+    var img = new Image();
+    img.src = "https://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=13&size=300x300&sensor=false";
+
+    output.appendChild(img);
+  }
+
+  function error() {
+    output.innerHTML = "Unable to retrieve your location";
+  }
+
+  output.innerHTML = "<p>Locating…</p>";
+
+  navigator.geolocation.getCurrentPosition(success, error, options);
+}
 </script>
