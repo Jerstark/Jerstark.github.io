@@ -25,5 +25,5 @@
 		document.getElementById("loc").innerHTML = "Ouch, that failed " + 'ERROR(' + err.code + '): ' + err.message;
     };
 	document.getElementById("loc").innerHTML = "Loading...";
-    navigator.geolocation.getCurrentPosition(success, error, options);
+    navigator.geolocation.getCurrentPosition(success, error);
 </script>
