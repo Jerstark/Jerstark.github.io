@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body style='margin: 0px 0px 0px 0px; padding: 0px; overflow: hidden'>
-<p><button onclick="geoFindMe()">Show my location</button></p>
-<div id="out"></div>
+<div id="loc" style='width: 100%; height: 100%; font-size: 30px; color: white'>Hi there!</div>
 </body>
 </html>
 <script>
@@ -11,28 +10,36 @@
         timeout: 5000,
         maximumAge: 0
     };
-	
-function geoFindMe() {
-  var output = document.getElementById("out");
+	var webView = new WebView(this);
 
-  if (!navigator.geolocation){
-    output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
-    return;
-  }
+    function success(pos) {
+        var crd = pos.coords;
 
-  function success(position) {
-    var latitude  = position.coords.latitude;
-    var longitude = position.coords.longitude;
+        console.log('Your current position is:');
+        console.log('Latitude : ' + crd.latitude);
+        console.log('Longitude: ' + crd.longitude);
+        if(webView) {
+            alert("Lat, Long: " + crd.latitude + ", " + crd.longitude);
+        }
+		document.getElementById("loc").innerHTML = "Lat, Long: " + crd.latitude + ", " + crd.longitude;
+    };
 
-    output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
-  }
+    function error(err) {
+        console.warn('ERROR(' + err.code + '): ' + err.message);
+    };
 
-  function error(err) {
-    output.innerHTML = "Unable to retrieve your location: " + JSON.stringify(err);
-  }
-
-  output.innerHTML = "<p>Locating…</p>";
-
-  navigator.geolocation.getCurrentPosition(success, error, options);
-}
+    if(webView) {
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setDatabaseEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+		webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+	    /*webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                callback.invoke(origin, true, false);
+            }
+        });*/
+    }
+    navigator.geolocation.getCurrentPosition(success, error, options);
 </script>
